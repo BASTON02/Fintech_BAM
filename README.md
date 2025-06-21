@@ -9,9 +9,10 @@ It generates revenue through:
 - 50% of the savings
 
 ## General summary
-Generally, the idea is that users (buyers and sellers) can pay and receive capital at the point of purchase in any currency that they desire. This allows for crypto and fiat to interact directly.
-Furthermore, due to the vast amount of currencies, there are many paths that can lead from currency A to B, in doing so, the offering finds the optimised path, ensuring the cheapest rate is always taken.
-This saves money for the client. Furthermore, due to the many paths, arbitrage is theorised to exist. The arbitrage profits are added to the firms profits in the end.
+- Generally, the idea is that users (buyers and sellers) can pay and receive capital at the point of purchase in any currency that they desire.
+- This allows for crypto and fiat to interact directly.
+- Furthermore, due to the vast amount of currencies, there are many paths that can lead from currency A to B, in doing so, the offering finds the optimised path, ensuring the cheapest rate is always taken.
+- This saves money for the client. Furthermore, due to the many paths, arbitrage is theorised to exist. The arbitrage profits are added to the firms profits in the end.
 ---
 
 ## Table of Contents
