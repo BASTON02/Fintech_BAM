@@ -35,7 +35,6 @@ This project outlines the steps undertaken as part of this MVP. Several steps to
 - Selecting shortest path
 - Deriving commission and savings earnings
 - Hook up front end using fastapi to react (input and output)
-
 Generally, the technical flow consists of the front end interface, written in React.js taking the inputs, feeding it into the backend Juypter notebook that performs the path optimisation. It then derives the rates charged given the fastest path and any arbitrage and returns the transfered rates to the front end in the desired currencies. It also summarises the cost savings and arbitrage earnings for the firm.
 
 ## Project Structure
@@ -50,13 +49,12 @@ The other files are all supporting documents, mainly used to generate the front 
 git clone [https://github.com/your-username/your-repo.git](https://github.com/BASTON02/Fintech_BAM)]
 cd MSC-THESIS---BAM
 
-# Install dependencies
+## Install dependencies
 pip install -r requirements.txt
 
 ## Usage
 The project is written in both python and react.js. Juypter was used for the backend, while codesandbox was used as the ide to run the react.js script. In order to connect these two scripts, NGROK was used as a private url connection that streams the data transfer between both scripts to one another. This needs to be configured with a new key for every new session. To recreate the demo to have a working MVP, you will need to reinitialise the NGROK session and have your own NGROK account as this is user specific for the time being. Once that has been done, regenerate the API key, add it to the backend script and then freely play with the front end which should now process data in the backend and then display it in the UI.
-
--NGROK can be found here: https://ngrok.com/
+- NGROK can be found here: https://ngrok.com/
 
 ## Data
 The project takes user input as the main data. It expects the user's to input the currency and amount as an input. Furthermore, then based on the user input, it will pull data using one or more of the api's at the backend to perform the path finding calculation. This calculation then provides the rates between the currencies and derives how much the transfer resulted in. Lastly, this is then displayed. Therefore the main data involved is based on the user prompt, with additional data coming from other free api's into exchanges.
