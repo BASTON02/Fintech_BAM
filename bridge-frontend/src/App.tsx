@@ -1,61 +1,33 @@
-import React, { useState } from "react"; // Import React and useState hook 
+import React, { useState } from "react"; // Import React and useState hook for managing local component state
 
-//set the currencies array with a mix of fiat and crypto currencies
+// Define a list of supported currencies (fiat + crypto)
 const currencies = [
-  "USD",
-  "EUR",
-  "GBP",
-  "CAD",
-  "AUD",
-  "JPY",
-  "MAD",
-  "ZAR",
-  "INR",
-  "BRL",
-  "TRY",
-  "HUF",
-  "MXN",
-  "THB",
-  "NGN",
-  "COP",
-  "PEN",
-  "BTC",
-  "ETH",
-  "USDT",
-  "BNB",
-  "SOL",
-  "ADA",
-  "AVAX",
-  "XMR",
-  "MATIC",
-  "TRX",
-  "LTC",
-  "NEAR",
+  "USD", "EUR", "GBP", "CAD", "AUD", "JPY", "MAD", "ZAR", "INR", "BRL",
+  "TRY", "HUF", "MXN", "THB", "NGN", "COP", "PEN",
+  "BTC", "ETH", "USDT", "BNB", "SOL", "ADA", "AVAX", "XMR", "MATIC", "TRX", "LTC", "NEAR"
 ];
 
-// Main App components, being the input fields, buttons, and result display
+// Main app component
 function App() {
-  const [amount, setAmount] = useState(0);
-  const [fromCurrency, setFromCurrency] = useState("BTC");
-  const [toCurrency, setToCurrency] = useState("USD");
-  const [result, setResult] = useState(null);
-  const [preQuote, setPreQuote] = useState(null);
-  const [loading, setLoading] = useState(false);
+  // State hooks to track user input and API results
+  const [amount, setAmount] = useState(0); // Input amount from the user
+  const [fromCurrency, setFromCurrency] = useState("BTC"); // Currency buyer pays in
+  const [toCurrency, setToCurrency] = useState("USD"); // Currency seller wants
+  const [result, setResult] = useState(null); // Full conversion result (optimization, commission, savings, etc.)
+  const [preQuote, setPreQuote] = useState(null); // Direct pre-quote only (simple quote)
+  const [loading, setLoading] = useState(false); // UI loading flag for async actions
 
-  // Base API URL for the conversion service
-  const API_BASE = "https://8720-80-115-236-238.ngrok-free.app";
+  // Base URL for the backend API (served via ngrok or similar)
+  const API_BASE = "https://9d28-80-115-236-238.ngrok-free.app";
 
-  // Function to handle the conversion process through the API and if successful, set the result state
-  // If the conversion fails, it will log the error to the console
+  // Handle full conversion logic — this calls the /api/convert endpoint
   const handleConvert = async () => {
-    setLoading(true);
-    setPreQuote(null);
+    setLoading(true);      // Start loading
+    setPreQuote(null);     // Clear any existing pre-quote
     try {
       const response = await fetch(`${API_BASE}/api/convert`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           amount: parseFloat(amount),
           from_currency: fromCurrency,
@@ -63,22 +35,21 @@ function App() {
         }),
       });
       const data = await response.json();
-      setResult(data);
+      setResult(data); // Set full result with optimization
     } catch (err) {
-      console.error("Conversion failed", err);
+      console.error("Conversion failed", err); // Error logging
     }
-    setLoading(false);
+    setLoading(false); // Stop loading
   };
 
+  // Handle direct rate preview (pre-quote) — this calls the /api/prequote endpoint
   const handlePreQuote = async () => {
-    setLoading(true);
-    setResult(null);
+    setLoading(true);     // Start loading
+    setResult(null);      // Clear any previous result
     try {
-      const response = await fetch(`${API_BASE}/api/convert`, {
+      const response = await fetch(`${API_BASE}/api/prequote`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           amount: parseFloat(amount),
           from_currency: fromCurrency,
@@ -86,15 +57,18 @@ function App() {
         }),
       });
       const data = await response.json();
-      setPreQuote(data.direct_amount);
+      if (data.direct_amount) {
+        setPreQuote(data.direct_amount); // Set the pre-quoted amount (direct rate)
+      } else {
+        console.error("Unexpected prequote response:", data);
+      }
     } catch (err) {
-      console.error("Pre-quote failed", err);
+      console.error("Pre-quote failed", err); // Error logging
     }
-    setLoading(false);
+    setLoading(false); // Stop loading
   };
 
-  // Main render function that displays the UI components
-  // It includes input fields for amount and currency selection, buttons for actions, and displays results
+  // Main render block
   return (
     <div
       style={{
@@ -109,7 +83,7 @@ function App() {
       }}
     >
       <img
-        src="/bridge-logo.png" // Ensure you have the bridge logo image in the public folder - this loads the image
+        src="/bridge-logo.png" // Local image path in /public folder
         alt="Bridge Logo"
         style={{
           height: 60,
@@ -123,11 +97,12 @@ function App() {
         Bridge: Crypto/Fiat Converter
       </h1>
 
+      {/* Buyer section */}
       <h2 style={{ marginTop: 30 }}>Buyer</h2>
       <input
         type="number"
         value={amount}
-        onChange={(e) => setAmount(e.target.value)} // Handle amount input 
+        onChange={(e) => setAmount(e.target.value)} // Capture amount
         placeholder="Amount"
         style={{
           width: "100%",
@@ -140,7 +115,7 @@ function App() {
       />
       <select
         value={fromCurrency}
-        onChange={(e) => setFromCurrency(e.target.value)} // Handle currency selection for buyer
+        onChange={(e) => setFromCurrency(e.target.value)} // Buyer currency selection
         style={{
           width: "100%",
           padding: 10,
@@ -157,10 +132,11 @@ function App() {
         ))}
       </select>
 
+      {/* Seller section */}
       <h2>Seller</h2>
       <select
         value={toCurrency}
-        onChange={(e) => setToCurrency(e.target.value)} // Handle currency selection for seller
+        onChange={(e) => setToCurrency(e.target.value)} // Seller currency selection
         style={{
           width: "100%",
           padding: 10,
@@ -176,9 +152,10 @@ function App() {
         ))}
       </select>
 
+      {/* Buttons for Pre-Quote and Convert actions */}
       <div style={{ display: "flex", gap: "10px", marginTop: 20 }}>
         <button
-          onClick={handlePreQuote} // Handle pre-quote request
+          onClick={handlePreQuote} // Trigger direct quote
           disabled={loading}
           style={{
             flex: 1,
@@ -193,7 +170,7 @@ function App() {
           {loading ? "Loading..." : "Get Pre-Quote"}
         </button>
         <button
-          onClick={handleConvert} // Handle conversion request
+          onClick={handleConvert} // Trigger full optimized conversion
           disabled={loading}
           style={{
             flex: 1,
@@ -209,6 +186,7 @@ function App() {
         </button>
       </div>
 
+      {/* Pre-quote result display */}
       {preQuote && (
         <div
           style={{
@@ -226,6 +204,7 @@ function App() {
         </div>
       )}
 
+      {/* Full conversion result display */}
       {result && (
         <div
           style={{
@@ -240,23 +219,19 @@ function App() {
             <strong>Amount Sent:</strong> {amount} {fromCurrency}
           </p>
           <p>
-            <strong>Direct Rate Amount:</strong> {result.direct_amount}{" "}
-            {toCurrency}
+            <strong>Direct Rate Amount:</strong> {result.direct_amount} {toCurrency}
           </p>
           <p>
-            <strong>Actual Amount (Optimized):</strong>{" "}
-            {result.converted_amount} {toCurrency}
+            <strong>Actual Amount (Optimized):</strong> {result.converted_amount} {toCurrency}
           </p>
           <p>
-            <strong>Optimized Exchange Rate:</strong>{" "}
-            {result.optimized_rate || "N/A"}
+            <strong>Optimized Exchange Rate:</strong> {result.optimized_rate || "N/A"}
           </p>
           <p>
             <strong>Direct Path:</strong> {fromCurrency} → USD → {toCurrency}
           </p>
           <p>
-            <strong>Full Optimized Path:</strong>{" "}
-            {result.exchange_path?.join(" → ") || "N/A"}
+            <strong>Full Optimized Path:</strong> {result.exchange_path?.join(" → ") || "N/A"}
           </p>
           <p>
             <strong>Savings:</strong> {result.savings}
@@ -267,6 +242,7 @@ function App() {
         </div>
       )}
 
+      {/* Arbitrage profit badge (only shown if profit exists) */}
       {result && result.arbitrage_profit > 0 && (
         <div
           style={{
@@ -279,8 +255,8 @@ function App() {
             border: "1px solid #dc2626",
           }}
         >
-          Arbitrage Profit Earned: {result.arbitrage_profit} {toCurrency} 
-        </div> // Display arbitrage profit if available
+          Arbitrage Profit Earned: {result.arbitrage_profit} {toCurrency}
+        </div>
       )}
     </div>
   );
