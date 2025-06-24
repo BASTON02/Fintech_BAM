@@ -1,0 +1,8 @@
+requests
+networkx
+pandas
+uvicorn
+fastapi
+pydantic
+nest_asyncio
+pyngrok
